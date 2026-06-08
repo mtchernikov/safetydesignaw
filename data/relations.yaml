@@ -1,0 +1,35 @@
+meta:
+  version: "0.1"
+  name: "Toaster PoC relation types"
+
+relations:
+  is_a:
+    description: "Classification relation."
+  has_component:
+    description: "System has component."
+  has_property:
+    description: "Subject has property."
+  has_role:
+    description: "Subject has a hazard role."
+  material:
+    description: "Subject is made of object material."
+  supplied_by:
+    description: "Component is supplied by energy source."
+  supplies_energy_to:
+    description: "Energy source supplies component."
+  located_inside:
+    description: "Subject is located inside object."
+  near:
+    description: "Subject is near object."
+  user_accessible:
+    description: "Subject can be accessed by user."
+  touchable:
+    description: "Subject can be touched."
+  inserted_into:
+    description: "Subject is inserted into object."
+  exposed_to:
+    description: "Subject exposed to condition."
+  may_cause:
+    description: "Subject may cause object."
+  has_potential_hazard_pattern:
+    description: "System has a derived potential hazard pattern."

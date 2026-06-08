@@ -1,0 +1,336 @@
+meta:
+  version: "0.1"
+  name: "Toaster PoC ontology"
+  purpose: "Controlled concepts for toaster Early Design Hazard Awareness."
+
+concepts:
+
+  toaster:
+    canonical_name: "toaster"
+    type: "device"
+    synonyms:
+      - "toaster"
+      - "bread toaster"
+      - "household toaster"
+      - "portable toaster"
+    properties:
+      - "household_appliance"
+      - "portable_cooking_appliance"
+      - "uses_heat_to_toast_bread"
+    implied_facts:
+      - subject: "$self"
+        relation: "has_component"
+        object: "bread_slot"
+        relation_group: "structural"
+        confidence: 0.65
+        needs_validation: true
+      - subject: "normal_air"
+        relation: "has_role"
+        object: "oxidizer"
+        relation_group: "hazard_role"
+        confidence: 0.9
+
+  power_supply_220v:
+    canonical_name: "220 V mains supply"
+    type: "energy_source"
+    synonyms:
+      - "220 V"
+      - "220V"
+      - "230 V"
+      - "230V"
+      - "AC mains"
+      - "mains voltage"
+      - "mains supply"
+      - "line voltage"
+      - "wall power"
+    properties:
+      - "hazardous_voltage"
+      - "electric_shock_potential"
+      - "arc_potential"
+      - "fire_potential"
+      - "requires_insulation_concept"
+      - "requires_touch_protection"
+      - "requires_overcurrent_protection"
+    implied_facts:
+      - subject: "$self"
+        relation: "has_role"
+        object: "hazardous_voltage"
+        relation_group: "hazard_role"
+        confidence: 0.95
+      - subject: "$self"
+        relation: "may_cause"
+        object: "electric_shock"
+        relation_group: "causal_hazard"
+        confidence: 0.85
+        needs_validation: true
+
+  mains_supply:
+    canonical_name: "mains supply"
+    type: "component"
+    synonyms:
+      - "mains supply"
+      - "power supply"
+      - "mains input"
+      - "AC input"
+      - "power cord"
+    properties:
+      - "connected_to_mains_voltage"
+      - "supplies_electrical_energy"
+    implied_facts:
+      - subject: "$self"
+        relation: "is_a"
+        object: "power_supply_220v"
+        relation_group: "classification"
+        confidence: 0.85
+        needs_validation: true
+
+  heating_element:
+    canonical_name: "heating element"
+    type: "component"
+    synonyms:
+      - "heating element"
+      - "heater"
+      - "resistive heater"
+      - "toaster element"
+      - "hot wire"
+    properties:
+      - "hot_surface"
+      - "ignition_source"
+      - "generates_heat"
+      - "can_cause_burn_if_accessible"
+      - "can_ignite_combustible_residue_if_uncontrolled"
+    implied_facts:
+      - subject: "$self"
+        relation: "has_role"
+        object: "ignition_source"
+        relation_group: "hazard_role"
+        confidence: 0.85
+      - subject: "$self"
+        relation: "has_property"
+        object: "hot_surface"
+        relation_group: "thermal"
+        confidence: 0.9
+
+  bread_slot:
+    canonical_name: "bread slot"
+    type: "access_opening"
+    synonyms:
+      - "bread slot"
+      - "slot"
+      - "top opening"
+      - "access opening"
+      - "bread opening"
+    properties:
+      - "user_accessible"
+      - "opening_to_heating_zone"
+      - "may_allow_foreign_object_insertion"
+    implied_facts:
+      - subject: "$self"
+        relation: "user_accessible"
+        object: "user"
+        relation_group: "human_interaction"
+        confidence: 0.8
+        needs_validation: true
+
+  metal_housing:
+    canonical_name: "metal housing"
+    type: "component"
+    synonyms:
+      - "metal housing"
+      - "stainless steel housing"
+      - "steel housing"
+      - "conductive housing"
+      - "metal enclosure"
+    properties:
+      - "conductive_material"
+      - "may_be_user_accessible"
+      - "requires_protective_earth_or_double_insulation_if_near_mains"
+    implied_facts:
+      - subject: "$self"
+        relation: "material"
+        object: "conductive_material"
+        relation_group: "material"
+        confidence: 0.9
+      - subject: "$self"
+        relation: "user_accessible"
+        object: "user"
+        relation_group: "human_interaction"
+        confidence: 0.75
+        needs_validation: true
+
+  conductive_material:
+    canonical_name: "conductive material"
+    type: "material"
+    synonyms:
+      - "metal"
+      - "steel"
+      - "stainless steel"
+      - "aluminium"
+      - "conductive part"
+    properties:
+      - "can_conduct_electric_current"
+      - "can_create_shock_path_if_energized"
+
+  plastic:
+    canonical_name: "plastic"
+    type: "material"
+    synonyms:
+      - "plastic"
+      - "polymer"
+      - "ABS"
+      - "PC"
+      - "PP"
+      - "plastic knob"
+      - "plastic lever"
+      - "plastic part"
+    properties:
+      - "potentially_combustible"
+      - "material_grade_matters"
+      - "temperature_sensitive"
+    implied_facts:
+      - subject: "$self"
+        relation: "has_role"
+        object: "possible_fuel"
+        relation_group: "hazard_role"
+        confidence: 0.6
+        needs_validation: true
+
+  plastic_part:
+    canonical_name: "plastic part"
+    type: "component"
+    synonyms:
+      - "plastic part"
+      - "plastic knob"
+      - "plastic lever"
+      - "plastic handle"
+      - "plastic enclosure"
+    properties:
+      - "material_is_plastic"
+      - "may_be_combustible_depending_on_grade"
+    implied_facts:
+      - subject: "$self"
+        relation: "material"
+        object: "plastic"
+        relation_group: "material"
+        confidence: 0.9
+
+  crumbs:
+    canonical_name: "crumbs"
+    type: "residue"
+    synonyms:
+      - "crumbs"
+      - "bread crumbs"
+      - "food residue"
+      - "residue"
+      - "burnt residue"
+    properties:
+      - "combustible_residue"
+      - "can_accumulate_near_heating_element"
+    implied_facts:
+      - subject: "$self"
+        relation: "has_role"
+        object: "possible_fuel"
+        relation_group: "hazard_role"
+        confidence: 0.75
+
+  moisture:
+    canonical_name: "moisture"
+    type: "environmental_condition"
+    synonyms:
+      - "moisture"
+      - "water"
+      - "damp cloth"
+      - "cleaning liquid"
+      - "wet cleaning"
+      - "condensation"
+    properties:
+      - "may_create_conductive_path"
+      - "may_reduce_insulation_resistance"
+      - "may_cause_short_circuit"
+
+  metal_object:
+    canonical_name: "metal object"
+    type: "foreign_object"
+    synonyms:
+      - "metal object"
+      - "knife"
+      - "fork"
+      - "metal tool"
+      - "conductive object"
+    properties:
+      - "conductive"
+      - "may_reach_live_or_hot_parts_if_inserted"
+
+  protective_earth:
+    canonical_name: "protective earth"
+    type: "risk_control"
+    synonyms:
+      - "protective earth"
+      - "earth"
+      - "ground"
+      - "PE"
+      - "protective grounding"
+    properties:
+      - "shock_risk_control"
+      - "requires_continuity"
+
+  double_insulation:
+    canonical_name: "double insulation"
+    type: "risk_control"
+    synonyms:
+      - "double insulation"
+      - "reinforced insulation"
+      - "class II"
+      - "double insulated"
+    properties:
+      - "shock_risk_control"
+      - "requires_creepage_and_clearance_validation"
+
+  air:
+    canonical_name: "air"
+    type: "environment"
+    synonyms:
+      - "air"
+      - "normal air"
+      - "ambient air"
+    properties:
+      - "contains_oxygen"
+    implied_facts:
+      - subject: "$self"
+        relation: "has_role"
+        object: "oxidizer"
+        relation_group: "hazard_role"
+        confidence: 0.9
+
+  oxidizer:
+    canonical_name: "oxidizer"
+    type: "hazard_role"
+    synonyms:
+      - "oxidizer"
+      - "oxygen"
+      - "air"
+    properties:
+      - "supports_combustion"
+
+  ignition_source:
+    canonical_name: "ignition source"
+    type: "hazard_role"
+    synonyms:
+      - "ignition source"
+      - "hot surface"
+      - "spark"
+      - "arc"
+      - "heating element"
+    properties:
+      - "can_start_fire_if_fuel_and_oxidizer_present"
+
+  possible_fuel:
+    canonical_name: "possible fuel"
+    type: "hazard_role"
+    synonyms:
+      - "fuel"
+      - "combustible material"
+      - "flammable material"
+      - "possible fuel"
+    properties:
+      - "can_burn_if_ignited_under_relevant_conditions"

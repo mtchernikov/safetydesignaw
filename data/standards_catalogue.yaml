@@ -1,0 +1,116 @@
+meta:
+  version: "0.1"
+  name: "Toaster PoC standards catalogue"
+  purpose: "Candidate standards are resolved deterministically from matched hazard IDs."
+
+standards:
+
+  IEC_60335_1:
+    display_name: "IEC 60335-1"
+    title: "Household and similar electrical appliances — Safety — General requirements"
+    domains: ["household_appliance", "electrical_safety"]
+    rationale: "General household appliance safety standard candidate for electric shock, fire, heating and accessibility topics."
+    links:
+      - hazard_id: "FT_ELECTRIC_SHOCK_ACCESSIBLE_PATH"
+        hazard: "Electric shock"
+        level: "primary"
+        confidence: 0.85
+        rationale: "Mains-powered household appliance with accessible parts."
+      - hazard_id: "FT_FIRE_TRIANGLE_TOASTER"
+        hazard: "Fire"
+        level: "primary"
+        confidence: 0.8
+        rationale: "Heating appliance with combustible residues/materials."
+      - hazard_id: "FT_BURN_HOT_SURFACE"
+        hazard: "Burn injury"
+        level: "primary"
+        confidence: 0.75
+        rationale: "Accessible hot surfaces and thermal safety."
+      - hazard_id: "FT_MOISTURE_MAINS_SHORT_SHOCK_FIRE"
+        hazard: "Moisture-related electrical hazard"
+        level: "primary"
+        confidence: 0.78
+        rationale: "Mains appliance with possible cleaning/moisture exposure."
+      - hazard_id: "FT_METAL_OBJECT_INSERTION_SHOCK_SHORT"
+        hazard: "Conductive object insertion"
+        level: "primary"
+        confidence: 0.8
+        rationale: "Accessible openings in mains appliance."
+
+  IEC_60335_2_9:
+    display_name: "IEC 60335-2-9"
+    title: "Particular requirements for grills, toasters and similar portable cooking appliances"
+    domains: ["toaster", "portable_cooking_appliance"]
+    rationale: "Toaster-specific household appliance standard candidate."
+    links:
+      - hazard_id: "FT_FIRE_TRIANGLE_TOASTER"
+        hazard: "Fire"
+        level: "primary"
+        confidence: 0.9
+        rationale: "Toaster-specific heating and food-residue context."
+      - hazard_id: "FT_BURN_HOT_SURFACE"
+        hazard: "Burn injury"
+        level: "primary"
+        confidence: 0.85
+        rationale: "Toaster-specific accessible hot surfaces/openings."
+      - hazard_id: "FT_METAL_OBJECT_INSERTION_SHOCK_SHORT"
+        hazard: "Conductive object insertion"
+        level: "primary"
+        confidence: 0.8
+        rationale: "Toaster-specific access opening / bread slot misuse context."
+      - hazard_id: "FT_ELECTRIC_SHOCK_ACCESSIBLE_PATH"
+        hazard: "Electric shock"
+        level: "primary"
+        confidence: 0.78
+        rationale: "Toaster-specific access and construction requirements."
+
+  IEC_60664_SERIES:
+    display_name: "IEC 60664 series"
+    title: "Insulation coordination for equipment within low-voltage systems"
+    domains: ["insulation", "creepage_clearance"]
+    rationale: "Supporting design evidence for insulation coordination, creepage and clearance."
+    links:
+      - hazard_id: "FT_ELECTRIC_SHOCK_ACCESSIBLE_PATH"
+        hazard: "Electric shock"
+        level: "supporting"
+        confidence: 0.65
+        rationale: "Insulation distances and coordination evidence."
+      - hazard_id: "FT_MOISTURE_MAINS_SHORT_SHOCK_FIRE"
+        hazard: "Moisture-related electrical hazard"
+        level: "supporting"
+        confidence: 0.6
+        rationale: "Pollution degree and insulation distance evidence."
+
+  IEC_60529:
+    display_name: "IEC 60529"
+    title: "Degrees of protection provided by enclosures (IP Code)"
+    domains: ["ingress_protection"]
+    rationale: "Conditional/supporting evidence if ingress, access or cleaning/moisture exposure is relevant."
+    links:
+      - hazard_id: "FT_MOISTURE_MAINS_SHORT_SHOCK_FIRE"
+        hazard: "Moisture-related electrical hazard"
+        level: "conditional"
+        confidence: 0.55
+        rationale: "Ingress protection may be relevant if moisture exposure is part of use or cleaning."
+      - hazard_id: "FT_METAL_OBJECT_INSERTION_SHOCK_SHORT"
+        hazard: "Conductive object insertion"
+        level: "supporting"
+        confidence: 0.5
+        rationale: "Access probe / enclosure opening evidence may support evaluation."
+
+  IEC_60730_1:
+    display_name: "IEC 60730-1"
+    title: "Automatic electrical controls"
+    domains: ["controls", "thermal_cutoff", "household_appliance"]
+    rationale: "Conditional if the toaster uses automatic controls, timer, thermostat or thermal cutout as safety-relevant control."
+    links:
+      - hazard_id: "FT_FIRE_TRIANGLE_TOASTER"
+        hazard: "Fire"
+        level: "conditional"
+        confidence: 0.55
+        rationale: "Relevant if overheating protection depends on automatic controls."
+      - hazard_id: "FT_BURN_HOT_SURFACE"
+        hazard: "Burn injury"
+        level: "conditional"
+        confidence: 0.5
+        rationale: "Relevant if surface temperature is controlled by automatic control."

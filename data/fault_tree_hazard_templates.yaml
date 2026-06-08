@@ -1,0 +1,360 @@
+meta:
+  version: "0.1"
+  name: "Toaster fault-tree hazard templates"
+  purpose: "Small AND/OR fault-tree templates for toaster Early Design Hazard Awareness."
+
+templates:
+
+  - id: "FT_ELECTRIC_SHOCK_ACCESSIBLE_PATH"
+    title: "Electric shock through accessible conductive/live path"
+    category: "electrical_safety"
+    top_event: "electric_shock_to_user"
+    priority_default: "high"
+    confidence_default: "medium"
+    fault_tree:
+      node_id: "TOP"
+      type: "AND"
+      label: "Electric shock to user"
+      children:
+        - node_id: "E1"
+          type: "EVENT"
+          label: "Hazardous voltage is present"
+          match:
+            concepts_any:
+              - "power_supply_220v"
+              - "mains_supply"
+              - "hazardous_voltage"
+              - "mains_voltage"
+          missing_if_absent:
+            - "Is the toaster powered from hazardous mains voltage?"
+        - node_id: "E2"
+          type: "OR"
+          label: "User can contact conductive or live path"
+          children:
+            - node_id: "E2_1"
+              type: "EVENT"
+              label: "User-accessible metal/conductive housing"
+              match:
+                concepts_any:
+                  - "metal_housing"
+                  - "conductive_material"
+                  - "user_accessible_metal_housing"
+            - node_id: "E2_2"
+              type: "EVENT"
+              label: "User-accessible opening"
+              match:
+                concepts_any:
+                  - "bread_slot"
+                  - "access_opening"
+            - node_id: "E2_3"
+              type: "EVENT"
+              label: "User access relation exists"
+              match:
+                relations_any:
+                  - ["*", "user_accessible", "user"]
+          missing_if_absent:
+            - "Which parts are touchable or user-accessible?"
+            - "Can a user touch or reach live parts through the slot?"
+        - node_id: "E3"
+          type: "OR"
+          label: "Protection is missing, failed or unknown"
+          children:
+            - node_id: "E3_1"
+              type: "EVENT"
+              label: "Unknown touch protection"
+              match:
+                concepts_any:
+                  - "unknown_touch_protection"
+            - node_id: "E3_2"
+              type: "EVENT"
+              label: "Moisture or conductive contamination"
+              match:
+                concepts_any:
+                  - "moisture"
+                  - "cleaning_liquid"
+                  - "conductive_contamination"
+            - node_id: "E3_3"
+              type: "EVENT"
+              label: "Protection explicitly missing or failed"
+              match:
+                concepts_any:
+                  - "missing_protective_earth"
+                  - "insulation_failure"
+                  - "damaged_insulation"
+    reasoning: >
+      Electric shock can occur when hazardous mains voltage becomes accessible
+      through a conductive housing, opening, inserted conductive object, moisture,
+      damaged insulation or missing/unknown protective measures.
+    hazards:
+      - "electric shock"
+      - "burn from shock current"
+      - "startle injury"
+      - "short-circuit fire"
+    missing_information:
+      - "Is the housing protective-earthed?"
+      - "Is the product double-insulated?"
+      - "What insulation separates live parts from accessible parts?"
+      - "Are creepage and clearance distances defined?"
+      - "Can a user touch live parts through the bread slot?"
+      - "What happens if a conductive object is inserted?"
+
+  - id: "FT_FIRE_TRIANGLE_TOASTER"
+    title: "Fire from fuel, air and ignition source"
+    category: "fire_thermal"
+    top_event: "fire_in_toaster"
+    priority_default: "high"
+    confidence_default: "medium"
+    fault_tree:
+      node_id: "TOP"
+      type: "AND"
+      label: "Fire"
+      children:
+        - node_id: "F1"
+          type: "EVENT"
+          label: "Oxidizer is present"
+          match:
+            concepts_any:
+              - "air"
+              - "normal_air"
+              - "oxidizer"
+              - "oxygen"
+        - node_id: "F2"
+          type: "OR"
+          label: "Fuel or combustible material is present"
+          children:
+            - node_id: "F2_1"
+              type: "EVENT"
+              label: "Plastic part"
+              match:
+                concepts_any:
+                  - "plastic"
+                  - "plastic_part"
+                  - "possible_fuel"
+            - node_id: "F2_2"
+              type: "EVENT"
+              label: "Food residue or crumbs"
+              match:
+                concepts_any:
+                  - "crumbs"
+                  - "food_residue"
+                  - "combustible_residue"
+        - node_id: "F3"
+          type: "OR"
+          label: "Ignition source is present"
+          children:
+            - node_id: "F3_1"
+              type: "EVENT"
+              label: "Heating element or hot surface"
+              match:
+                concepts_any:
+                  - "heating_element"
+                  - "hot_surface"
+                  - "ignition_source"
+            - node_id: "F3_2"
+              type: "EVENT"
+              label: "Short circuit or arc"
+              match:
+                concepts_any:
+                  - "short_circuit"
+                  - "arc"
+                  - "spark"
+        - node_id: "F4"
+          type: "EVENT"
+          label: "Fuel and ignition source in local context"
+          match:
+            relations_any:
+              - ["plastic_part", "near", "heating_element"]
+              - ["crumbs", "near", "heating_element"]
+              - ["bread_slot", "near", "heating_element"]
+              - ["system", "has_potential_hazard_pattern", "fire_triangle"]
+          missing_if_absent:
+            - "Are combustible materials close to the heating element?"
+            - "Can crumbs accumulate near hot elements?"
+    reasoning: >
+      Fire requires oxidizer, fuel and an ignition source in a relevant local
+      context. In a toaster, air is normally present, heating elements are ignition
+      sources, and crumbs or plastic parts can be possible fuel depending on
+      material grade, distance, temperature and fault conditions.
+    hazards:
+      - "ignition"
+      - "flame propagation"
+      - "toxic smoke"
+      - "thermal injury"
+      - "property damage"
+    missing_information:
+      - "Material grade and flammability rating of plastic parts"
+      - "Maximum normal temperature"
+      - "Maximum single-fault temperature"
+      - "Crumb accumulation and cleaning concept"
+      - "Distance from plastic to heating element"
+      - "Overtemperature protection"
+      - "Overcurrent protection"
+
+  - id: "FT_BURN_HOT_SURFACE"
+    title: "Burn injury from accessible hot surface or heating zone"
+    category: "thermal_safety"
+    top_event: "burn_injury"
+    priority_default: "medium"
+    confidence_default: "medium"
+    fault_tree:
+      node_id: "TOP"
+      type: "AND"
+      label: "Burn injury"
+      children:
+        - node_id: "B1"
+          type: "EVENT"
+          label: "Hot element or hot surface is present"
+          match:
+            concepts_any:
+              - "heating_element"
+              - "hot_surface"
+              - "high_temperature"
+        - node_id: "B2"
+          type: "OR"
+          label: "Human contact is possible"
+          children:
+            - node_id: "B2_1"
+              type: "EVENT"
+              label: "User-accessible bread slot"
+              match:
+                concepts_any:
+                  - "bread_slot"
+                  - "access_opening"
+            - node_id: "B2_2"
+              type: "EVENT"
+              label: "Touchable housing or surface"
+              match:
+                relations_any:
+                  - ["*", "user_accessible", "user"]
+        - node_id: "B3"
+          type: "EVENT"
+          label: "Burn pattern derived or temperature unknown"
+          match:
+            hazard_pattern_any:
+              - "burn_from_accessible_hot_part"
+    reasoning: >
+      Burn injury is possible when a user can contact or approach hot surfaces,
+      the bread slot or the heating zone, and surface temperature or access
+      protection is not sufficiently controlled.
+    hazards:
+      - "skin burn"
+      - "startle reaction"
+      - "secondary injury"
+    missing_information:
+      - "Maximum accessible surface temperature"
+      - "Can fingers reach the heating zone?"
+      - "Cool-down time"
+      - "Warning and guarding concept"
+      - "Normal and single-fault temperatures"
+
+  - id: "FT_MOISTURE_MAINS_SHORT_SHOCK_FIRE"
+    title: "Moisture near mains parts may cause shock, short circuit or fire"
+    category: "electrical_safety"
+    top_event: "moisture_related_electrical_hazard"
+    priority_default: "high"
+    confidence_default: "medium"
+    fault_tree:
+      node_id: "TOP"
+      type: "AND"
+      label: "Moisture-related electrical hazard"
+      children:
+        - node_id: "M1"
+          type: "EVENT"
+          label: "Mains voltage is present"
+          match:
+            concepts_any:
+              - "power_supply_220v"
+              - "mains_supply"
+              - "hazardous_voltage"
+        - node_id: "M2"
+          type: "EVENT"
+          label: "Moisture or cleaning liquid may be present"
+          match:
+            concepts_any:
+              - "moisture"
+              - "water"
+              - "cleaning_liquid"
+        - node_id: "M3"
+          type: "EVENT"
+          label: "Moisture hazard pattern derived"
+          match:
+            hazard_pattern_any:
+              - "mains_moisture_shock_fire"
+    reasoning: >
+      Moisture or cleaning liquid can reduce insulation resistance, create conductive
+      paths, cause corrosion, short circuit, electric shock or fire when mains
+      voltage is present.
+    hazards:
+      - "electric shock"
+      - "short circuit"
+      - "fire"
+      - "corrosion"
+      - "loss of insulation"
+    missing_information:
+      - "Is wet cleaning allowed?"
+      - "Ingress protection and sealing concept"
+      - "Instructions for cleaning"
+      - "Drainage and drying concept"
+      - "Insulation resistance under humidity"
+      - "Pollution degree and creepage/clearance"
+
+  - id: "FT_METAL_OBJECT_INSERTION_SHOCK_SHORT"
+    title: "Conductive object inserted into bread slot"
+    category: "misuse_electrical_safety"
+    top_event: "shock_or_short_due_to_inserted_object"
+    priority_default: "high"
+    confidence_default: "medium"
+    fault_tree:
+      node_id: "TOP"
+      type: "AND"
+      label: "Shock or short due to inserted conductive object"
+      children:
+        - node_id: "I1"
+          type: "EVENT"
+          label: "Bread slot or opening is user-accessible"
+          match:
+            concepts_any:
+              - "bread_slot"
+              - "access_opening"
+        - node_id: "I2"
+          type: "EVENT"
+          label: "Live or hot parts are inside/near opening"
+          match:
+            concepts_any:
+              - "heating_element"
+              - "live_part"
+              - "hazardous_voltage"
+        - node_id: "I3"
+          type: "OR"
+          label: "Conductive object insertion is possible or mentioned"
+          children:
+            - node_id: "I3_1"
+              type: "EVENT"
+              label: "Metal object explicitly mentioned"
+              match:
+                concepts_any:
+                  - "metal_object"
+            - node_id: "I3_2"
+              type: "EVENT"
+              label: "Opening may allow foreign object insertion"
+              match:
+                concepts_any:
+                  - "may_allow_foreign_object_insertion"
+                  - "bread_slot"
+    reasoning: >
+      A toaster has an accessible bread slot near live/hot parts. If a conductive
+      object is inserted, it may create shock, short circuit or arc hazard.
+      If insertion is not explicitly described, this should be treated as foreseeable
+      misuse to be checked.
+    hazards:
+      - "electric shock"
+      - "short circuit"
+      - "arc"
+      - "burn"
+      - "fire"
+    missing_information:
+      - "Can a metal object reach live parts?"
+      - "Slot geometry and access probe results"
+      - "Warnings and instructions"
+      - "Protection against foreign object insertion"
+      - "Power disconnection behavior"
