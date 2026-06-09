@@ -682,7 +682,7 @@ def graph_to_dot(graph: List[Dict[str, Any]]) -> str:
 # Streamlit UI
 # ============================================================
 
-st.set_page_config(page_title="Safety Co-Pilot Toaster PoC", layout="wide")
+st.set_page_config(page_title="Safety Co-Pilot Design Safety PoC", layout="wide")
 
 st.title("Safety Co-Pilot PoC — Toaster")
 st.markdown(
